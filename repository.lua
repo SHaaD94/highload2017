@@ -54,7 +54,6 @@ local function updateUser(userId, userObj)
     end
 end
 
-
 ------------------------------------- Visits----------------------------
 -- 1 id - уникальный внешний id посещения. Устанавливается тестирующей системой. 32-разрядное целое число.
 -- 2 location - id достопримечательности. 32-разрядное целое число.
@@ -103,6 +102,54 @@ local function updateVisit(visitId, visitNew)
     end
 end
 
+------------------------------------- Visits----------------------------
+-- 1 id - уникальный внешний id достопримечательности. Устанавливается тестирующей системой. 32-разрядное целое число.
+-- 2 place - описание достопримечательности. Текстовое поле неограниченной длины.
+-- 3 country - название страны расположения. unicode-строка длиной до 50 символов.
+-- 4 city - название города расположения. unicode-строка длиной до 50 символов.
+-- 5 distance - расстояние от города по прямой в километрах. 32-разрядное целое число.
+local function getLocation(id)
+    local locationRow = box.space.locations:select(id)[1]
+    if not locationRow then
+        return nil
+    end
+
+    local location = {}
+    location.id = locationRow[1]
+    location.place = locationRow[2]
+    location.country = locationRow[3]
+    location.city = locationRow[4]
+    location.distance = locationRow[5]
+
+    return location
+end
+
+local function saveLocation(location)
+    box.space.locations:insert { location.id, location.place, location.country, location.city, location.distance }
+end
+
+local function updateLocation(locationId, locationNew)
+    local update = {}
+    if locationNew.place ~= nil then
+        table.insert(update, { '=', 2, locationNew.place })
+    end
+    if locationNew.country ~= nil then
+        table.insert(update, { '=', 3, locationNew.country })
+    end
+    if locationNew.city ~= nil then
+        table.insert(update, { '=', 4, locationNew.city })
+    end
+    if locationNew.distance ~= nil then
+        table.insert(update, { '=', 5, locationNew.distance })
+    end
+    local result = box.space.locations:update({ locationId }, update)
+    if not result then
+        return 400
+    else
+        return 200
+    end
+end
+
 
 return {
     ------- User---------
@@ -112,5 +159,9 @@ return {
     ------- Visit---------
     getVisit = getVisit,
     saveVisit = saveVisit,
-    updateVisit = updateVisit
+    updateVisit = updateVisit,
+    ------- Location----------
+    getLocation = getLocation,
+    saveLocation = saveLocation,
+    updateLocation = updateLocation
 }
