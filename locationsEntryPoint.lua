@@ -27,7 +27,11 @@ local function saveUser(userJson)
 end
 
 local function updateUser(userId, userJson)
-    return controller._repository.updateUser(userId, userJson);
+    local user = getUser(userId)
+    if not user then
+        return 400
+    end
+    return controller._repository.updateUser(user, userJson);
 end
 
 function userEndpoint(req)
@@ -54,6 +58,28 @@ function userEndpoint(req)
 
     return status, response
 end
+
+--
+--function getIdsBySegment(req)
+--    local segmentId = req.args.segmentId;
+--    local className = req.args.dataClass;
+--
+--    local response = {}
+--    response.status = 400;
+--
+--    if segmentId == nil then
+--        response.body = "segmentId must be set";
+--        return response
+--    elseif className == nil then
+--        response.body = "class must be set";
+--        return response
+--    else
+--        --required for correct serialization by nginx
+--        local result = {}
+--        result.result = controller._repository:getIdsBySegment(tonumber64(segmentId), className)
+--        return result;
+--    end
+--end
 
 return {
     new = new

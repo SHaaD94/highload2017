@@ -14,29 +14,30 @@ local function parseId(uri)
     return tonumber(string.split(string.split(uri, '/')[3], '?')[1])
 end
 
-local function getUser(id)
-    return controller._repository.getUser(id);
+local function getVisit(id)
+    return controller._repository.getVisit(id);
 end
 
-local function saveUser(userJson)
-    if getUser(userJson.id) ~= nil then
+local function saveVisit(visitJson)
+    print('save visit')
+    if getVisit(visitJson.id) ~= nil then
         return 400
     end
-    controller._repository.saveUser(userJson);
+    controller._repository.saveVisit(visitJson);
     return 200
 end
 
-local function updateUser(userId, userJson)
-    return controller._repository.updateUser(userId, userJson);
+local function updateVisit(visitId, visitJson)
+    return controller._repository.updateVisit(visitId, visitJson);
 end
 
-function userEndpoint(req)
-    print('user endpoint')
+function visitEndpoint(req)
+    print('visit endpoint')
     local status = 200
     local response = {}
     if req.method == 'GET' then
-        local userId = parseId(req.uri)
-        response = getUser(userId)
+        local visitId = parseId(req.uri)
+        response = getVisit(visitId)
         if not response then
             status = 404
         end
@@ -45,10 +46,10 @@ function userEndpoint(req)
         print('post')
         local jsonBody = json.decode(req.body)
         if (string.match(req.uri, '/new')) then
-            status = saveUser(jsonBody)
+            status = saveVisit(jsonBody)
         else
-            local userId = parseId(req.uri)
-            status = updateUser(userId, jsonBody)
+            local visitId = parseId(req.uri)
+            status = updateVisit(visitId, jsonBody)
         end
     end
 

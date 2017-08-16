@@ -6,6 +6,7 @@ local function start()
     require('migrationHandler').migrate()
 
     require('userEntryPoint').new()
+    require('visitsEntryPoint').new()
 end
 
 return {
