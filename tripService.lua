@@ -5,7 +5,7 @@ local function start()
 
     require('migrationHandler').migrate()
 
-    require('entryPoint').new()
+    require('userEntryPoint').new()
 end
 
 return {

@@ -4,17 +4,6 @@ Repository = {}
 
 function Repository:new()
     local repository = {}
-    repository._createdSpaces = {}
-    repository._schemasUnderCreation = {}
-
-    local function safeCreateSpace(spaceName)
-        return box.schema.space.create(spaceName, { if_not_exists = true, engine = memtx })
-    end
-
-    local function safeCreateIndex(space)
-        space:create_index('primary', { type = 'HASH', if_not_exists = true, parts = { 1, 'number', 2, 'unsigned' } })
-        space:create_index('segment', { unique = false, if_not_exists = true, parts = { 3, 'unsigned' } })
-    end
 
     local function safeGetSpace(spaceName)
         local fiber = require('fiber')

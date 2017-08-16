@@ -1,6 +1,5 @@
 #!    /usr/bin/env tarantool
 log = require('log')
-require('si_configReader')
 
 box.cfg {
     listen = 3310;
