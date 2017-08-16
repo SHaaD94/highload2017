@@ -4,24 +4,28 @@ local log = require('log')
 local controller = {}
 
 local function new()
---    controller._repository = Repository:new(controller._generator)
+    --    controller._repository = Repository:new(controller._generator)
 
     return controller
 end
 
 function userEndpoint(req)
-    log.info(req)
     print(req)
-    for a,b in pairs(req) do
-        print (a)
-        print (b)
-        print ('-----')
+    for a, b in pairs(req) do
+        print(a)
+        print(b)
+        print('-----')
     end
 
-    local result = {}
-    result.ololo=12312
-    return result
+
+    local status = 200
+    local message = 'fuck you'
+    return status, message
 end
+
+local function saveUser(body)
+end
+
 --
 --function getIdsBySegment(req)
 --    local segmentId = req.args.segmentId;
