@@ -9,7 +9,7 @@ box.cfg {
     snapshot_period = 10000000,
     snapshot_count = 1,
     slab_alloc_arena = 3,
-    slab_alloc_maximal = 4
+    memtx_max_tuple_size= 10000000
 }
 
 log.warn('starting new instance')
