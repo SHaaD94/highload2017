@@ -66,17 +66,15 @@ local function getUserVisits(id, fromDate, toDate, countryEq, toDistance)
     if not user then
         return 404, {}
     end
-    print('ssss')
     local userVisits = box.space.visits.index.user_vis:select({ id }, { { iterator = box.index.GE }, { iterator = box.index.EQ } })
     local result = {}
-    print('ddd')
     local index = 1
     for _, visit in pairs(userVisits) do
         local visitObj = {}
         local location = box.space.locations:select { visit[2] }[1]
         local distance = location[5]
         local country = location[3]
-        print(country == countryEq)
+
         visitObj.place = location[2]
         visitObj.visited_at = visit[4]
         visitObj.mark = visit[5]
@@ -86,12 +84,10 @@ local function getUserVisits(id, fromDate, toDate, countryEq, toDistance)
         local passByToDistance = not toDistance or toDistance > distance
         local passByCountry = not countryEq or countryEq == country
         if passByFromDate and passByToDate and passByToDistance and passByCountry then
-            print(index)
             result[tonumber(index)] = visitObj
             index = index + 1
         end
     end
-    print(require('json').encode(result))
 
     return 200, result
 end

@@ -22,7 +22,9 @@ local function getUserVisits(id, fromDate, toDate, country, toDistance)
     fromDate = tonumber(fromDate)
     toDate = tonumber(toDate)
     toDistance = tonumber(toDistance)
-    local status, response = controller._repository.getUserVisits(id, fromDate, toDate, country, toDistance);
+    local status, visits = controller._repository.getUserVisits(id, fromDate, toDate, country, toDistance);
+    local response= {}
+    response.visits= visits
     return status, response
 end
 
@@ -41,7 +43,6 @@ function userEndpoint(req)
     if req.method == 'GET' then
         local userId = parseId(req.uri)
         if string.match(req.uri, '/visits') then
-            print(req.args.country)
             local s, r = getUserVisits(userId, req.args.fromDate, req.args.toDate, req.args.country, req.args.toDistance)
             status = s
             response = r
@@ -53,7 +54,6 @@ function userEndpoint(req)
         end
     end
     if req.method == 'POST' then
-        print('post')
         local jsonBody = json.decode(req.body)
         if string.match(req.uri, '/new') then
             status = saveUser(jsonBody)
