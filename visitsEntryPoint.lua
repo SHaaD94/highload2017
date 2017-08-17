@@ -19,12 +19,7 @@ local function getVisit(id)
 end
 
 local function saveVisit(visitJson)
-    print('save visit')
-    if getVisit(visitJson.id) ~= nil then
-        return 400
-    end
-    controller._repository.saveVisit(visitJson);
-    return 200
+    return controller._repository.saveVisit(visitJson);
 end
 
 local function updateVisit(visitId, visitJson)

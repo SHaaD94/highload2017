@@ -26,7 +26,14 @@ end
 
 local function saveUser(user)
     print('saving user')
-    box.space.users:insert { user.id, user.email, user.first_name, user.last_name, user.gender, user.birth_date }
+    local status, _ = pcall(function()
+        return box.space.users:insert { user.id, user.email, user.first_name, user.last_name, user.gender, user.birth_date }
+    end)
+
+    if not status then
+        return 400
+    end
+    return 200
 end
 
 local function updateUser(userId, userObj)
@@ -77,7 +84,14 @@ local function getVisit(id)
 end
 
 local function saveVisit(visit)
-    box.space.visits:insert { visit.id, visit.location, visit.user, visit.visited_at, visit.mark }
+    local status, _ = pcall(function()
+        return box.space.visits:insert { visit.id, visit.location, visit.user, visit.visited_at, visit.mark }
+    end)
+
+    if not status then
+        return 400
+    end
+    return 200
 end
 
 local function updateVisit(visitId, visitNew)
@@ -125,7 +139,14 @@ local function getLocation(id)
 end
 
 local function saveLocation(location)
-    box.space.locations:insert { location.id, location.place, location.country, location.city, location.distance }
+    local status, _ = pcall(function()
+        box.space.locations:insert { location.id, location.place, location.country, location.city, location.distance }
+    end)
+
+    if not status then
+        return 400
+    end
+    return 200
 end
 
 local function updateLocation(locationId, locationNew)

@@ -19,11 +19,7 @@ local function getUser(id)
 end
 
 local function saveUser(userJson)
-    if getUser(userJson.id) ~= nil then
-        return 400
-    end
-    controller._repository.saveUser(userJson);
-    return 200
+    return controller._repository.saveUser(userJson);
 end
 
 local function updateUser(userId, userJson)

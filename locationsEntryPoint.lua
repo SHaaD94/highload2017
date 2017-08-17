@@ -19,12 +19,7 @@ local function getLocation(id)
 end
 
 local function saveLocation(locationJson)
-    print('save location')
-    if getLocation(locationJson.id) ~= nil then
-        return 400
-    end
-    controller._repository.saveLocation(locationJson);
-    return 200
+    return controller._repository.saveLocation(locationJson);
 end
 
 local function updateLocation(locationId, locationJson)

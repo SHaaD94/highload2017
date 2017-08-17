@@ -176,21 +176,9 @@ RUN mkdir /var/cache/nginx
 RUN apt-get -y install supervisor
 RUN service supervisor stop
 
-RUN echo "[supervisord]" > /etc/supervisord.conf && \
-    echo "nodaemon=true" >> /etc/supervisord.conf && \
-    echo "" >> /etc/supervisord.conf && \
-
-    echo "[program:tarantool]" >> /etc/supervisord.conf && \
-    echo "stdout_logfile=/dev/stdout" >> /etc/supervisord.conf && \
-    echo "stdout_logfile_maxbytes=0" >> /etc/supervisord.conf && \
-    echo "command=tarantool /usr/local/share/tarantool/starter.lua" >> /etc/supervisord.conf && \
-    echo "" >> /etc/supervisord.conf && \
-
-    echo "[program:nginx]" >> /etc/supervisord.conf && \
-    echo "command=nginx -c /usr/local/bin/rest_nginx.conf" >> /etc/supervisord.conf && \
-    echo "stdout_logfile=/dev/stdout" >> /etc/supervisord.conf && \
-    echo "stdout_logfile_maxbytes=0" >> /etc/supervisord.conf && \
-    echo "" >> /etc/supervisord.conf
+RUN echo "nginx -c /usr/local/bin/rest_nginx.conf"> /usr/local/bin/run.sh && \
+    echo "tarantool /usr/local/share/tarantool/starter.lua">> /usr/local/bin/run.sh && \
+    chmod +x /usr/local/bin/run.sh
 
 EXPOSE 80
 
@@ -198,6 +186,5 @@ COPY data.zip /tmp/data/data.zip
 COPY *.lua /usr/local/share/tarantool/
 COPY rest_nginx.conf /usr/local/bin/
 
-ENTRYPOINT ["supervisord", "--configuration", "/etc/supervisord.conf"]
-#ENTRYPOINT ["tarantool", "/usr/local/share/tarantool/starter.lua"]
+ENTRYPOINT ["/bin/bash", "-c", "./usr/local/bin/run.sh"]
 
