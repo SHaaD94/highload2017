@@ -13,6 +13,9 @@ local function initTables()
 
         box.schema.space.create('visits', { if_not_exists = true, engine = memtx })
         box.space.visits:create_index('primary', { type = 'HASH', parts = { 1, 'number' } })
+        box.space.visits:create_index('location', { unique = false, type = 'TREE', parts = { 2, 'number' } })
+        box.space.visits:create_index('user', { unique = false, type = 'TREE', parts = { 3, 'number' } })
+        box.space.visits:create_index('user_vis', { unique = false, type = 'TREE', parts = { 3, 'number', 4, 'number' } })
     end
 end
 

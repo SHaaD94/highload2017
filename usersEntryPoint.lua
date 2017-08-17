@@ -18,6 +18,14 @@ local function getUser(id)
     return controller._repository.getUser(id);
 end
 
+local function getUserVisits(id, fromDate, toDate, country, toDistance)
+    fromDate = tonumber(fromDate)
+    toDate = tonumber(toDate)
+    toDistance = tonumber(toDistance)
+    local status, response = controller._repository.getUserVisits(id, fromDate, toDate, country, toDistance);
+    return status, response
+end
+
 local function saveUser(userJson)
     return controller._repository.saveUser(userJson);
 end
@@ -32,15 +40,22 @@ function userEndpoint(req)
     local response = {}
     if req.method == 'GET' then
         local userId = parseId(req.uri)
-        response = getUser(userId)
-        if not response then
-            status = 404
+        if string.match(req.uri, '/visits') then
+            print(req.args.country)
+            local s, r = getUserVisits(userId, req.args.fromDate, req.args.toDate, req.args.country, req.args.toDistance)
+            status = s
+            response = r
+        else
+            response = getUser(userId)
+            if not response then
+                status = 404
+            end
         end
     end
     if req.method == 'POST' then
         print('post')
         local jsonBody = json.decode(req.body)
-        if (string.match(req.uri, '/new')) then
+        if string.match(req.uri, '/new') then
             status = saveUser(jsonBody)
         else
             local userId = parseId(req.uri)

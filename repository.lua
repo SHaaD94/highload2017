@@ -55,10 +55,45 @@ local function updateUser(userId, userObj)
     end
     local result = box.space.users:update({ userId }, update)
     if not result then
-        return 400
+        return 404
     else
         return 200
     end
+end
+
+local function getUserVisits(id, fromDate, toDate, countryEq, toDistance)
+    local user = getUser(id)
+    if not user then
+        return 404, {}
+    end
+    print('ssss')
+    local userVisits = box.space.visits.index.user_vis:select({ id }, { { iterator = box.index.GE }, { iterator = box.index.EQ } })
+    local result = {}
+    print('ddd')
+    local index = 1
+    for _, visit in pairs(userVisits) do
+        local visitObj = {}
+        local location = box.space.locations:select { visit[2] }[1]
+        local distance = location[5]
+        local country = location[3]
+        print(country == countryEq)
+        visitObj.place = location[2]
+        visitObj.visited_at = visit[4]
+        visitObj.mark = visit[5]
+
+        local passByFromDate = not fromDate or fromDate < visitObj.visited_at
+        local passByToDate = not toDate or toDate > visitObj.visited_at
+        local passByToDistance = not toDistance or toDistance > distance
+        local passByCountry = not countryEq or countryEq == country
+        if passByFromDate and passByToDate and passByToDistance and passByCountry then
+            print(index)
+            result[tonumber(index)] = visitObj
+            index = index + 1
+        end
+    end
+    print(require('json').encode(result))
+
+    return 200, result
 end
 
 ------------------------------------- Visits----------------------------
@@ -116,7 +151,7 @@ local function updateVisit(visitId, visitNew)
     end
 end
 
-------------------------------------- Visits----------------------------
+------------------------------------- Locations----------------------------
 -- 1 id - уникальный внешний id достопримечательности. Устанавливается тестирующей системой. 32-разрядное целое число.
 -- 2 place - описание достопримечательности. Текстовое поле неограниченной длины.
 -- 3 country - название страны расположения. unicode-строка длиной до 50 символов.
@@ -177,6 +212,7 @@ return {
     getUser = getUser,
     saveUser = saveUser,
     updateUser = updateUser,
+    getUserVisits = getUserVisits,
     ------- Visit---------
     getVisit = getVisit,
     saveVisit = saveVisit,
