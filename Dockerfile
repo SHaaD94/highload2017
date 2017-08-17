@@ -170,13 +170,34 @@ RUN apt-get install -y cmake libpcre3-dev zlib1g-dev libssl-dev libxslt-dev \
   && ln -sf /dev/stdout /var/log/nginx/access.log \
   && ln -sf /dev/stderr /var/log/nginx/error.log
 
+RUN useradd --no-create-home nginx
+RUN mkdir /var/cache/nginx
+
+RUN apt-get -y install supervisor
+RUN service supervisor stop
+
+RUN echo "[supervisord]" > /etc/supervisord.conf && \
+    echo "nodaemon=true" >> /etc/supervisord.conf && \
+    echo "" >> /etc/supervisord.conf && \
+
+    echo "[program:tarantool]" >> /etc/supervisord.conf && \
+    echo "stdout_logfile=/dev/stdout" >> /etc/supervisord.conf && \
+    echo "stdout_logfile_maxbytes=0" >> /etc/supervisord.conf && \
+    echo "command=tarantool /usr/local/share/tarantool/starter.lua" >> /etc/supervisord.conf && \
+    echo "" >> /etc/supervisord.conf && \
+
+    echo "[program:nginx]" >> /etc/supervisord.conf && \
+    echo "command=nginx -c /usr/local/bin/rest_nginx.conf" >> /etc/supervisord.conf && \
+    echo "stdout_logfile=/dev/stdout" >> /etc/supervisord.conf && \
+    echo "stdout_logfile_maxbytes=0" >> /etc/supervisord.conf && \
+    echo "" >> /etc/supervisord.conf
+
+EXPOSE 80
 
 COPY data.zip /tmp/data/data.zip
 COPY *.lua /usr/local/share/tarantool/
 COPY rest_nginx.conf /usr/local/bin/
 
-
-
-#ENTRYPOINT ["supervisord", "--nodaemon", "--configuration", "/etc/supervisord.conf"]
-ENTRYPOINT ["tarantool", "/usr/local/share/tarantool/starter.lua"]
+ENTRYPOINT ["supervisord", "--configuration", "/etc/supervisord.conf"]
+#ENTRYPOINT ["tarantool", "/usr/local/share/tarantool/starter.lua"]
 
