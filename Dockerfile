@@ -183,6 +183,7 @@ RUN echo "nginx -c /usr/local/bin/rest_nginx.conf"> /usr/local/bin/run.sh && \
 EXPOSE 80
 
 COPY data.zip /tmp/data/data.zip
+COPY options.txt /tmp/data/options.txt
 COPY *.lua /usr/local/share/tarantool/
 COPY rest_nginx.conf /usr/local/bin/
 

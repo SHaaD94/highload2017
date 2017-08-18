@@ -45,6 +45,11 @@ local function updateVisit(visitId, visitJson)
             return 400
         end
     end
+    if (visitJson.location ~= nil and not isNumber(visitJson.location)) or
+            (visitJson.user ~= nil and not isNumber(visitJson.user)) or
+            (visitJson.visited_at ~= nil and not isNumber(visitJson.visited_at)) then
+        return 400
+    end
 
     return controller._repository.updateVisit(visitId, visitJson);
 end

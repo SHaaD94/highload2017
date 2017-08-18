@@ -44,6 +44,10 @@ local function updateLocation(locationId, locationJson)
             return 400
         end
     end
+    if (locationJson.distance ~= nil and not isNumber(locationJson.distance)) then
+        return 400
+    end
+
     return controller._repository.updateLocation(locationId, locationJson);
 end
 
@@ -52,7 +56,7 @@ local function getLocationAverage(locationId, fromDate, toDate, fromAge, toAge, 
             or (toDate ~= nil and not isNumber(toDate))
             or (fromAge ~= nil and not isNumber(fromAge))
             or (toAge ~= nil and not isNumber(toAge))
-            or (gender ~= nil and (type(gender) ~= 'string' or gender ~= 'f' or gender ~= 'm')) then
+            or (gender ~= nil and (type(gender) ~= 'string' or (gender ~= 'f' and gender ~= 'm'))) then
         return 400, {}
     end
     fromDate = tonumber(fromDate)

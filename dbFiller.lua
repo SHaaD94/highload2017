@@ -22,10 +22,23 @@ local function fill()
                 repository.saveVisit(entity)
             end
         end
-        --print(content)
     end
 end
 
+local function getDateNow()
+    local path = '/tmp/data/options.txt'
+    local fio = require('fio')
+    local file = fio.open(path, {'O_RDWR'})
+    print('found options.txt!')
+    print('reading currentDate!')
+    local content = tonumber(string.split(file:read(25), '\n')[1])
+    file:close()
+    print('current date has been read successfully:')
+    print(content)
+    return content
+end
+
 return {
-    fill = fill
+    fill = fill,
+    getDateNow = getDateNow
 }

@@ -1,5 +1,7 @@
 local log = require('log')
 
+local currentDate = require('dbFiller').getDateNow()
+
 -------------------------------- Users-----------------------------------
 -- 1    "id": 1,
 -- 2    "email": "robosen@icloud.com",
@@ -8,7 +10,6 @@ local log = require('log')
 -- 5    "gender": "m",
 -- 6    "birth_date": 345081600,
 local function getUser(id)
-    print('getting user')
     local userRow = box.space.users:select(id)[1]
     if not userRow then
         return nil
@@ -25,7 +26,6 @@ local function getUser(id)
 end
 
 local function saveUser(user)
-    print('saving user')
     local status, _ = pcall(function()
         return box.space.users:insert { user.id, user.email, user.first_name, user.last_name, user.gender, user.birth_date }
     end)
@@ -203,7 +203,7 @@ local function updateLocation(locationId, locationNew)
 end
 
 local function getAge(birthDate)
-    local diff = os.difftime(os.time(), birthDate)
+    local diff = os.difftime(currentDate, birthDate)
     return math.floor(diff / 365.25 * 24 * 60 * 60)
 end
 
@@ -233,7 +233,6 @@ local function getLocationAverage(locationId, fromDate, toDate, fromAge, toAge, 
             index = index + 1
         end
     end
-    print(avg)
     if index ~= 0 then
         avg = math.floor(avg / index * 100000 + 0.5) / 100000
     end

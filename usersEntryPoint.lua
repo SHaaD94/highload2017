@@ -61,11 +61,14 @@ local function updateUser(userId, userJson)
             return 400
         end
     end
+    if (userJson.birth_date ~= nil and not isNumber(userJson.birth_date)) then
+        return 400
+    end
+
     return controller._repository.updateUser(userId, userJson);
 end
 
 function userEndpoint(req)
-    print('user endpoint')
     local status = 200
     local response = {}
     if req.method == 'GET' then
