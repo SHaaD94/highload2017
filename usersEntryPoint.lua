@@ -10,6 +10,11 @@ local function new()
     return controller
 end
 
+local function isNumber(value)
+    local result, _ = pcall(function() math.floor(value) end)
+    return result
+end
+
 local function parseId(uri)
     return tonumber(string.split(string.split(uri, '/')[3], '?')[1])
 end
@@ -19,10 +24,10 @@ local function getUser(id)
 end
 
 local function getUserVisits(id, fromDate, toDate, country, toDistance)
-    if (fromDate == nil and type(fromDate) ~= 'number')
-            or (toDate == nil and type(toDate) ~= 'number')
-            or (toDistance == nil and type(toDistance) ~= 'number')
-            or (country == nil and type(country) ~= 'string') then
+    if (fromDate ~= nil and not isNumber(fromDate))
+            or (toDate ~= nil and not isNumber(toDate))
+            or (toDistance ~= nil and not isNumber(toDistance))
+            or (country ~= nil and type(country) ~= 'string') then
         return 400, {}
     end
     fromDate = tonumber(fromDate)
@@ -35,7 +40,7 @@ local function getUserVisits(id, fromDate, toDate, country, toDistance)
 end
 
 local function saveUser(userJson)
-    if userJson.id == nil or type(userJson.id) ~= 'number' then
+    if userJson.id == nil or not isNumber(userJson.id) then
         return 400
     end
 

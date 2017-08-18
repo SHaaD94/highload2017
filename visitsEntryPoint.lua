@@ -10,6 +10,11 @@ local function new()
     return controller
 end
 
+local function isNumber(value)
+    local result, _ = pcall(function() math.floor(value) end)
+    return result
+end
+
 local function parseId(uri)
     return tonumber(string.split(string.split(uri, '/')[3], '?')[1])
 end
@@ -19,7 +24,7 @@ local function getVisit(id)
 end
 
 local function saveVisit(visitJson)
-    if visitJson.id == nil or type(visitJson.id) ~= 'number' then
+    if visitJson.id == nil or not isNumber(visitJson.id) then
         return 400
     end
 

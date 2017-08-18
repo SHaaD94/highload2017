@@ -10,6 +10,11 @@ local function new()
     return controller
 end
 
+local function isNumber(value)
+    local result, _ = pcall(function() math.floor(value) end)
+    return result
+end
+
 local function parseId(uri)
     return tonumber(string.split(string.split(uri, '/')[3], '?')[1])
 end
@@ -19,7 +24,7 @@ local function getLocation(id)
 end
 
 local function saveLocation(locationJson)
-    if locationJson.id == nil or type(locationJson.id) ~= 'number' then
+    if locationJson.id == nil or not isNumber(locationJson.id) then
         return 400
     end
     for _, value in pairs(locationJson) do
@@ -43,11 +48,11 @@ local function updateLocation(locationId, locationJson)
 end
 
 local function getLocationAverage(locationId, fromDate, toDate, fromAge, toAge, gender)
-    if (fromDate == nil and type(fromDate) ~= 'number')
-            or (toDate == nil and type(toDate) ~= 'number')
-            or (fromAge == nil and type(fromAge) ~= 'number')
-            or (toAge == nil and type(toAge) ~= 'number')
-            or (gender == nil and type(gender) ~= 'string') then
+    if (fromDate ~= nil and not isNumber(fromDate))
+            or (toDate ~= nil and not isNumber(toDate))
+            or (fromAge ~= nil and not isNumber(fromAge))
+            or (toAge ~= nil and not isNumber(toAge))
+            or (gender ~= nil and type(gender) ~= 'string') then
         return 400, {}
     end
     fromDate = tonumber(fromDate)
