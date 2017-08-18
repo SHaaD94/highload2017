@@ -52,7 +52,7 @@ local function getLocationAverage(locationId, fromDate, toDate, fromAge, toAge, 
             or (toDate ~= nil and not isNumber(toDate))
             or (fromAge ~= nil and not isNumber(fromAge))
             or (toAge ~= nil and not isNumber(toAge))
-            or (gender ~= nil and type(gender) ~= 'string') then
+            or (gender ~= nil and (type(gender) ~= 'string' or gender ~= 'f' or gender ~= 'm')) then
         return 400, {}
     end
     fromDate = tonumber(fromDate)
