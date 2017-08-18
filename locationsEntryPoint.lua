@@ -23,19 +23,34 @@ local function saveLocation(locationJson)
 end
 
 local function updateLocation(locationId, locationJson)
-    print('update loc')
     return controller._repository.updateLocation(locationId, locationJson);
 end
 
+local function getLocationAverage(locationId, fromDate, toDate, fromAge, toAge, gender)
+    fromDate = tonumber(fromDate)
+    toDate = tonumber(toDate)
+    fromAge = tonumber(fromAge)
+    toAge = tonumber(toAge)
+    local status, avg = controller._repository.getLocationAverage(locationId, fromDate, toDate, fromAge, toAge, gender);
+    local response = {}
+    response.avg = avg
+    return status, response
+end
+
 function locationEndpoint(req)
-    print('location endpoint')
     local status = 200
     local response = {}
     if req.method == 'GET' then
         local locationId = parseId(req.uri)
-        response = getLocation(locationId)
-        if not response then
-            status = 404
+        if string.match(req.uri, '/avg') then
+            local s, r = getLocationAverage(locationId, req.args.fromDate, req.args.toDate, req.args.fromAge, req.args.toage, req.args.gender)
+            status = s
+            response = r
+        else
+            response = getLocation(locationId)
+            if not response then
+                status = 404
+            end
         end
     end
     if req.method == 'POST' then

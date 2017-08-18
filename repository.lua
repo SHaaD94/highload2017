@@ -141,7 +141,7 @@ local function updateVisit(visitId, visitNew)
     end
     local result = box.space.visits:update({ visitId }, update)
     if not result then
-        return 400
+        return 404
     else
         return 200
     end
@@ -196,10 +196,46 @@ local function updateLocation(locationId, locationNew)
     end
     local result = box.space.locations:update({ locationId }, update)
     if not result then
-        return 400
+        return 404
     else
         return 200
     end
+end
+
+local function getAge(birthDate)
+    local diff = os.difftime(os.time(), birthDate)
+    return math.floor(diff / 365.25 * 24 * 60 * 60)
+end
+
+local function getLocationAverage(locationId, fromDate, toDate, fromAge, toAge, gender)
+    local location = getLocation(locationId)
+    if not location then
+        return 404, {}
+    end
+
+    local locationVisits = box.space.visits.index.location:select(locationId)
+    local index = 1
+    local avg = 0
+    for _, visit in pairs(locationVisits) do
+        local user = box.space.users:select { visit[3] }[1]
+        local age = getAge(user[6])
+        local userGender = user[5]
+
+        local visitedAt = visit[4]
+
+        local passByFromDate = not fromDate or fromDate < visitedAt
+        local passByToDate = not toDate or toDate > visitedAt
+        local passByToAge = not toAge or toAge > age
+        local passByFromAge = not fromAge or fromAge < age
+        local passByGender = not gender or gender == userGender
+        if passByFromDate and passByToDate and passByToAge and passByFromAge and passByGender then
+            avg = avg + visit[5] -- mark
+            index = index + 1
+        end
+    end
+    print(avg)
+    avg = math.ceil(avg / index * 10000) / 10000
+    return 200, avg
 end
 
 
@@ -215,6 +251,7 @@ return {
     updateVisit = updateVisit,
     ------- Location----------
     getLocation = getLocation,
+    getLocationAverage = getLocationAverage,
     saveLocation = saveLocation,
     updateLocation = updateLocation
 }
