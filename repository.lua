@@ -214,7 +214,7 @@ local function getLocationAverage(locationId, fromDate, toDate, fromAge, toAge, 
     end
 
     local locationVisits = box.space.visits.index.location:select(locationId)
-    local index = 1
+    local index = 0
     local avg = 0
     for _, visit in pairs(locationVisits) do
         local user = box.space.users:select { visit[3] }[1]
@@ -234,7 +234,9 @@ local function getLocationAverage(locationId, fromDate, toDate, fromAge, toAge, 
         end
     end
     print(avg)
-    avg = math.ceil(avg / index * 10000) / 10000
+    if index ~= 0 then
+        avg = math.ceil(avg / index * 10000) / 10000
+    end
     return 200, avg
 end
 
