@@ -19,14 +19,37 @@ local function getLocation(id)
 end
 
 local function saveLocation(locationJson)
+    if locationJson.id == nil or type(locationJson.id) ~= 'number' then
+        return 400
+    end
+    for _, value in pairs(locationJson) do
+        if value == nil then
+            return 400
+        end
+    end
     return controller._repository.saveLocation(locationJson);
 end
 
 local function updateLocation(locationId, locationJson)
+    for arg, value in pairs(locationJson) do
+        if arg == 'id' then
+            return 400
+        end
+        if value == nil then
+            return 400
+        end
+    end
     return controller._repository.updateLocation(locationId, locationJson);
 end
 
 local function getLocationAverage(locationId, fromDate, toDate, fromAge, toAge, gender)
+    if (fromDate == nil and type(fromDate) ~= 'number')
+            or (toDate == nil and type(toDate) ~= 'number')
+            or (fromAge == nil and type(fromAge) ~= 'number')
+            or (toAge == nil and type(toAge) ~= 'number')
+            or (gender == nil and type(gender) ~= 'string') then
+        return 400, {}
+    end
     fromDate = tonumber(fromDate)
     toDate = tonumber(toDate)
     fromAge = tonumber(fromAge)

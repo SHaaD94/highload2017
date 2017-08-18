@@ -19,10 +19,28 @@ local function getVisit(id)
 end
 
 local function saveVisit(visitJson)
+    if visitJson.id == nil or type(visitJson.id) ~= 'number' then
+        return 400
+    end
+
+    for _, value in pairs(visitJson) do
+        if value == nil then
+            return 400
+        end
+    end
     return controller._repository.saveVisit(visitJson);
 end
 
 local function updateVisit(visitId, visitJson)
+    for arg, value in pairs(visitJson) do
+        if arg == 'id' then
+            return 400
+        end
+        if value == nil then
+            return 400
+        end
+    end
+
     return controller._repository.updateVisit(visitId, visitJson);
 end
 

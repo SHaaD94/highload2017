@@ -235,7 +235,7 @@ local function getLocationAverage(locationId, fromDate, toDate, fromAge, toAge, 
     end
     print(avg)
     if index ~= 0 then
-        avg = math.ceil(avg / index * 10000) / 10000
+        avg = math.floor(avg / index * 100000 + 0.5) / 100000
     end
     return 200, avg
 end
