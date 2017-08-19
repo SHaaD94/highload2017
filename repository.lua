@@ -203,8 +203,9 @@ local function updateLocation(locationId, locationNew)
 end
 
 local function getAge(birthDate)
+    -- fucking chicky algorithm, spent about 2 days to find it out
     local diff = os.difftime(currentDate, birthDate)
-    return math.floor(diff / (365.24 * 24 * 60 * 60))
+    return diff / (365.24 * 24 * 60 * 60)
 end
 
 local function getAgeTimestamp(age)
