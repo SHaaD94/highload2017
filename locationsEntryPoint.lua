@@ -86,8 +86,12 @@ function locationEndpoint(req)
         end
     end
     if req.method == 'POST' then
-        print('post')
-        local jsonBody = json.decode(req.body)
+        local parseStatus, jsonBody = pcall(function()
+            return json.decode(req.body)
+        end)
+        if not parseStatus then
+            return 400, response
+        end
         if (string.match(req.uri, '/new')) then
             status = saveLocation(jsonBody)
         else

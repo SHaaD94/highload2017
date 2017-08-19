@@ -28,13 +28,23 @@ end
 local function getDateNow()
     local path = '/tmp/data/options.txt'
     local fio = require('fio')
-    local file = fio.open(path, {'O_RDWR'})
+    local file = fio.open(path, {'O_RDONLY'})
     print('found options.txt!')
     print('reading currentDate!')
     local content = tonumber(string.split(file:read(25), '\n')[1])
     file:close()
     print('current date has been read successfully:')
     print(content)
+
+    print('removing hours, minutes and seconds:')
+    local localDate = os.date("*t",os.time())
+    localDate.hour = 0
+    localDate.min = 0
+    localDate.sec = 0
+    content = os.time(localDate)
+    print('new date is :')
+    print(content)
+
     return content
 end
 

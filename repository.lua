@@ -204,7 +204,7 @@ end
 
 local function getAge(birthDate)
     local diff = os.difftime(currentDate, birthDate)
-    return math.floor(diff / 365.25 * 24 * 60 * 60)
+    return math.floor(diff / (365.24 * 24 * 60 * 60))
 end
 
 local function getLocationAverage(locationId, fromDate, toDate, fromAge, toAge, gender)
@@ -225,7 +225,7 @@ local function getLocationAverage(locationId, fromDate, toDate, fromAge, toAge, 
 
         local passByFromDate = not fromDate or fromDate < visitedAt
         local passByToDate = not toDate or toDate > visitedAt
-        local passByToAge = not toAge or toAge > age
+        local passByToAge = not toAge or toAge + 1 > age
         local passByFromAge = not fromAge or fromAge < age
         local passByGender = not gender or gender == userGender
         if passByFromDate and passByToDate and passByToAge and passByFromAge and passByGender then
