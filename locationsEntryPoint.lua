@@ -75,7 +75,7 @@ function locationEndpoint(req)
     if req.method == 'GET' then
         local locationId = parseId(req.uri)
         if string.match(req.uri, '/avg') then
-            local s, r = getLocationAverage(locationId, req.args.fromDate, req.args.toDate, req.args.fromAge, req.args.toage, req.args.gender)
+            local s, r = getLocationAverage(locationId, req.args.fromDate, req.args.toDate, req.args.fromAge, req.args.toAge, req.args.gender)
             status = s
             response = r
         else
