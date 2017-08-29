@@ -33,6 +33,9 @@ local function getUserVisits(id, fromDate, toDate, country, toDistance)
     fromDate = tonumber(fromDate)
     toDate = tonumber(toDate)
     toDistance = tonumber(toDistance)
+    if country ~= nil then
+        country = country:gsub('+', ' ')
+    end
     local status, visits = controller._repository.getUserVisits(id, fromDate, toDate, country, toDistance);
     local response = {}
     response.visits = visits
